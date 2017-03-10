@@ -1,0 +1,28 @@
+{
+  "name": "appengine",
+  "description": "Autonomous bicycle website.",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Pehuen Moure",
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "cd ../..; npm run t -- appengine/express/test/*.test.js"
+  },
+  "dependencies": {
+    "body-parser": "1.16.0",
+    "cookie-parser": "1.4.3",
+    "debug": "2.6.0",
+    "ejs": "~2.5.5",
+    "express": "4.14.1",
+    "express-ws": "^3.0.0",
+    "google-maps": "^3.2.1",
+    "jade": "~1.9.2",
+    "morgan": "1.8.0",
+    "request": "^2.81.0",
+    "serve-favicon": "2.3.2",
+    "socket.io": "^1.7.2"
+  }
+}
