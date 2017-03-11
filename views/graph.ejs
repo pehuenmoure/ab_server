@@ -74,15 +74,17 @@
       }return s;
     }
 
-    function emit_button(){
-      console.log('Download');
+    function download(){
+      var file_name = "" + $('#file_name').val();
+      console.log(file_name);
       var msg = {
-        msgType: "download"
+        msgType: "download",
+        filename: file_name.toString()
       }
       websocket.send(JSON.stringify(msg));
     }
 
-    function reset_button(){
+    function reset(){
       console.log('Reset');
       var msg = {
         msgType: "reset"
@@ -100,11 +102,16 @@
 
 
 <body>
-  <button type="button" class="btn btn-warning" onclick="emit_button()">Download</button>
-  <button type="button" class="btn btn-info" onclick="reset_button()">Reset</button>
+  <button type="button" class="btn btn-warning" onclick="download()">Download</button>
+  <button type="button" class="btn btn-info" onclick="reset()">Reset</button>
+  <form>
+    File name:<br>
+    <input type="text" name="file_name" id="file_name"><br>
+  </form>
+
   <div id="chartContainer" style="height: 300px; width:100%;"></div>
   <table align = "center" id = data></table>
-
+  
   
 </body>
 

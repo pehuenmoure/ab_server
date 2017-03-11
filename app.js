@@ -24,6 +24,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 const app = express();
+const fs = require('fs');
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -36,16 +38,43 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use express-ws to enable web sockets.
 require('express-ws')(app);
 
-var data = new Array(6);
+var data = [1,2,35,43,4,1];
+var datax = new Array(0);
+datax.push(data);
 // A simple echo service.
 app.ws('/', (ws) => {
-  ws.on('message', (msg) =>{
+  ws.on('message', (msg) =>{  
     var new_msg = JSON.parse(msg);
 
     if (new_msg.msgType == "download"){
       console.log("Downloading data");
-      new_data = dataToString(data);
-      createCSVFile(new_data, "data");
+      console.log(datax);
+      var new_data = dataToString(datax);
+      console.log(new_data);
+      var filename = new_msg.filename.toString();
+
+      var existingFileNames = [];
+
+
+      fs.readdir('public/data/', (err, files) => {
+        if(err){
+          console.log("error in fs.readdir");
+        }
+        else{
+          files.forEach(file => {
+            existingFileNames.push(file);
+         });
+        }
+
+        if(existingFileNames.includes(filename+'.csv') || filename.length < 5 || existingFileNames.includes(filename)){
+          console.log("invalid filename");
+        }
+        else{
+          console.log('write file');
+          createCSVFile(new_data, filename);
+        }
+      })
+
     }
 
     else if (new_msg.msgType == 'reset'){
@@ -74,7 +103,7 @@ const wsServer = app.listen('65080', () => {
 function dataToString(rawdata){
   var str = "";
   //Converting data to string
-  for(var i = 1;i<rawdata.length;i++){
+  for(var i = 0;i<rawdata.length;i++){
     for(var j = 0; j<rawdata[i].length;j++){
       str+=rawdata[i][j];
       if(j<rawdata[i].length-1)
@@ -89,7 +118,7 @@ function dataToString(rawdata){
 *Writes data to a .csv file
 */
 function createCSVFile(data, name){
-  fs.writeFile('/public/data/' + name + '.csv', data,  function(err) {
+  fs.writeFile('public/data/' + name + '.csv', data,{flag:'wx'}  ,function(err) {
     if (err) {
       return console.error(err);
     }

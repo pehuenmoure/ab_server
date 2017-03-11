@@ -39,7 +39,6 @@
             waypoints[i].setMap(null);
           }
         }
-
       }
 
       function editPoints(){
@@ -90,9 +89,8 @@
         }
       }
 
-
       //unused
-      function calculateAndDisplayRouteBetweenTwoPoints(directionsService, directionsDisplay) {
+      /*function calculateAndDisplayRouteBetweenTwoPoints(directionsService, directionsDisplay) {
         var selectedMode = "BICYCLING";
         var length = waypoints.length;
         var way1 = waypoints[length-2].getPosition()
@@ -108,7 +106,7 @@
             window.alert('Directions request failed due to ' + status);
           }
         });
-      }
+      }*/
 
       function displayAllMarkers(map, directionsDisplay){
         for (var i = 0; i < waypoints.length; i++) {
@@ -157,8 +155,7 @@
       var pointsJSON = {
         legs: []
       };
-      
-      // string encoding of route
+
       for(var i = 0; i < route.legs.length; i++){
         var legSteps = route.legs[i].steps
         for (var k = 0; k < legSteps.length; k++){
@@ -178,7 +175,6 @@
           }
           pointsJSON.legs.push(legJSON)
         }
-
       }
       return JSON.stringify(pointsJSON)
     }
@@ -201,7 +197,6 @@
                 text: j.toString(),
                 color: 'white',
                 fontSize: "10px"
-
               },
               icon: {
                 path: google.maps.SymbolPath.CIRCLE,
@@ -213,14 +208,12 @@
               }
           });
             testMarkers.push(newMarker);
-
           }
         }
       }
     }
 
-
- function sendToApp(postData){
+function sendToApp(postData){
       console.log(postData);
       //var url = "http://localhost:8000/secretdatatransfer";
       var url = "https://" + window.location.hostname + "/secretdatatransfer";
