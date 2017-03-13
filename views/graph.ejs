@@ -67,15 +67,39 @@
     /* Establish the WebSocket connection and register event handlers. */
     var websocket = new WebSocket(webSocketUri);
 
+    websocket.onmessage = function(event) {
+      console.log("front end msg received");
+
+      var data = JSON.parse(event.data);
+      console.log(data.msg);
+
+      if(data.type == "filenameError"){
+        console.log('filenameError');
+      }
+      else if(data.type == "fileWritten"){
+        console.log('file written');
+        $('#file_name')[0].reset();
+        var filenames = data.existingFileNames;
+
+        for(var i = 0; i < filenames.length; i++){
+          $('#filenames').append(filenames[i]+"\n");
+        }
+      }
+      else{
+        console.log('unknown websocket message type');
+      }    
+    };
+
     function format(array){
       var s = "";
       for (i = 0; i < 4; i++){
         s = s + "<th>" + array[i].toFixed(4) + "</th>"
-      }return s;
+      }
+      return s;
     }
 
     function download(){
-      var file_name = "" + $('#file_name').val();
+      var file_name = "" + $('#file_name2').val();
       console.log(file_name);
       var msg = {
         msgType: "download",
@@ -104,13 +128,14 @@
 <body>
   <button type="button" class="btn btn-warning" onclick="download()">Download</button>
   <button type="button" class="btn btn-info" onclick="reset()">Reset</button>
-  <form>
+  <form id="file_name">
     File name:<br>
-    <input type="text" name="file_name" id="file_name"><br>
+    <input type="text" name="file_name" id='file_name2'><br>
   </form>
 
   <div id="chartContainer" style="height: 300px; width:100%;"></div>
   <table align = "center" id = data></table>
+  <p id="filenames"></p>
   
   
 </body>

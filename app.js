@@ -42,41 +42,54 @@ var data = [1,2,35,43,4,1];
 var datax = new Array(0);
 datax.push(data);
 // A simple echo service.
+var existingFileNames = [];
 app.ws('/', (ws) => {
+  console.log('hi');
   ws.on('message', (msg) =>{  
+    console.log('new message');
     var new_msg = JSON.parse(msg);
-
-    if (new_msg.msgType == "download"){
-      console.log("Downloading data");
-      console.log(datax);
-      var new_data = dataToString(datax);
-      console.log(new_data);
-      var filename = new_msg.filename.toString();
-
-      var existingFileNames = [];
-
-
-      fs.readdir('public/data/', (err, files) => {
+    
+    //may be inefficient, because it's reading all the file names in the data folder everytime ws receives a message
+    //existing files array doesnt work the first time after the server is started
+    fs.readdir('public/data/', (err, files) => {
         if(err){
           console.log("error in fs.readdir");
         }
         else{
           files.forEach(file => {
-            existingFileNames.push(file);
-         });
+            if(file!='.DS_Store'){
+              existingFileNames.push(file);
+            }
+          });
         }
+      });
 
-        if(existingFileNames.includes(filename+'.csv') || filename.length < 5 || existingFileNames.includes(filename)){
-          console.log("invalid filename");
-        }
-        else{
-          console.log('write file');
-          createCSVFile(new_data, filename);
-        }
-      })
+    if (new_msg.msgType == "download"){
+      var new_data = dataToString(datax);
+      var filename = new_msg.filename.toString();
 
+      if(existingFileNames.includes(filename+'.csv') || filename.length < 5 || existingFileNames.includes(filename)){
+        console.log("invalid filename");
+        var message = (filename.length < 5) ? "filename must be over 5 characters" : "filename is taken";
+        // send error 
+        var errorMessage = {
+          type: "filenameError",
+          msg: message
+        };
+        ws.send(JSON.stringify(errorMessage));
+      }
+      else{
+        console.log('write file');
+        createCSVFile(new_data, filename);
+        
+        var successMessage = {
+          type: "fileWritten",
+          msg: filename + ".csv written",
+          existingFileNames: existingFileNames
+        };
+        ws.send(JSON.stringify(successMessage));
+      }
     }
-
     else if (new_msg.msgType == 'reset'){
       console.log('reseting data')
       data = new Array(6);
@@ -103,10 +116,10 @@ const wsServer = app.listen('65080', () => {
 function dataToString(rawdata){
   var str = "";
   //Converting data to string
-  for(var i = 0;i<rawdata.length;i++){
-    for(var j = 0; j<rawdata[i].length;j++){
-      str+=rawdata[i][j];
-      if(j<rawdata[i].length-1)
+  for(var i = 0; i < rawdata.length; i++){
+    for(var j = 0; j < rawdata[i].length; j++){
+      str += rawdata[i][j];
+      if(j < rawdata[i].length-1)
         str+=',';
     }
     str+='\n';
@@ -118,7 +131,8 @@ function dataToString(rawdata){
 *Writes data to a .csv file
 */
 function createCSVFile(data, name){
-  fs.writeFile('public/data/' + name + '.csv', data,{flag:'wx'}  ,function(err) {
+  // flag wx causes this to fail when filename exists, prevents overwriting data
+  fs.writeFile('public/data/' + name + '.csv', data,{flag:'wx'}, function(err) {
     if (err) {
       return console.error(err);
     }
