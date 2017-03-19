@@ -4,7 +4,49 @@
   <!--<script src="/socket.io/socket.io.js"></script>-->
   <title>Graph</title>
 
+
+
+<style>
+    hr{
+      /* https://css-tricks.com/examples/hrs/ */
+      border: 0;
+      height: 1px;
+      background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    }
+    .btn-container-right {
+  direction: rtl;
+
+
+}
+    </style>
   <script type="text/javascript">
+
+
+
+  var webSocketHost = location.protocol === 'https:' ? 'wss://' : 'ws://';
+    var externalIp = '<%= externalIp %>';
+    var webSocketUri =  webSocketHost + externalIp + ':65080';
+
+    console.log(webSocketUri);
+
+    /* Establish the WebSocket connection and register event handlers. */
+    var websocket = new WebSocket(webSocketUri);
+
+  function downloadFile(filename){
+      var msg = {
+        msgType: "download",
+        filename: filename
+      }
+      console.log(JSON.stringify(msg))
+      websocket.send(JSON.stringify(msg));
+      url = '/download'+filename;
+      window.location.href = url;
+      //window.open(url);
+    }
+
+    function sendNote(filname, note){
+      console.log('note: '+note);
+    }
 
     var d0 = [];
     var d1 = []; 
@@ -58,15 +100,27 @@
       chart.render();   
     };
 
-    var webSocketHost = location.protocol === 'https:' ? 'wss://' : 'ws://';
-    var externalIp = '<%= externalIp %>';
-    var webSocketUri =  webSocketHost + externalIp + ':65080';
+    
 
-    console.log(webSocketUri);
 
-    /* Establish the WebSocket connection and register event handlers. */
-    var websocket = new WebSocket(webSocketUri);
+function addFileHTML(filename){
+  var form ='<div class="row">\
+      <div class="col-lg-6">\
+        <div class="input-group">\
+          <span class="input-group-btn">\
+            <button class="btn btn-secondary" type="button" onclick="sendNote(\'heelo.csv\',$(\'#what\').val())">Add note</button>\
+          </span>\
+          <input type="text" class="form-control" placeholder="Note..." id="what">\
+        </div>\
+      </div>\
+    </div>'
+  $('#filenames').after(
+    "<h1>"+filename +"</h1>"+form+"\n" +"<div class=\'btn-container-right\'>" +"<button type=\"button\" class=\"btn btn-info\" onclick=\"downloadFile(\'"+filename+"\')\">Download</button>"+ "<button type=\"button\" class=\"btn btn-warning\" onclick=\"display()\">Display</button>" + "</div>"+ "<hr/>"
+    );
+  }
 
+
+      
     websocket.onmessage = function(event) {
       console.log("front end msg received");
 
@@ -80,17 +134,21 @@
         console.log('file written');
         $('#file_name')[0].reset();
         var filenames = data.existingFileNames;
-
+        addFileHTML(data.newFilename.toString());
+      }
+      
+      else if(data.type == "initialFilenames"){
+        var filenames = data.existingFileNames;
         for(var i = 0; i < filenames.length; i++){
-          $('#filenames').append(filenames[i]+"\n");
+          addFileHTML(filenames[i]);
         }
       }
       else{
         console.log('unknown websocket message type');
       }    
     };
-
-    function format(array){
+    
+    function download(array){
       var s = "";
       for (i = 0; i < 4; i++){
         s = s + "<th>" + array[i].toFixed(4) + "</th>"
@@ -98,11 +156,11 @@
       return s;
     }
 
-    function download(){
+    function save(){
       var file_name = "" + $('#file_name2').val();
       console.log(file_name);
       var msg = {
-        msgType: "download",
+        msgType: "save",
         filename: file_name.toString()
       }
       websocket.send(JSON.stringify(msg));
@@ -126,7 +184,7 @@
 
 
 <body>
-  <button type="button" class="btn btn-warning" onclick="download()">Download</button>
+  <button type="button" class="btn btn-warning" onclick="save()">Save</button>
   <button type="button" class="btn btn-info" onclick="reset()">Reset</button>
   <form id="file_name">
     File name:<br>

@@ -16,14 +16,16 @@
 // [START app]
 'use strict';
 
-const http = require('http');
+
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+var router = express.Router();
 
 const app = express();
+const http = require('http').Server(app);
 const fs = require('fs');
 
 app.set('view engine', 'ejs');
@@ -43,8 +45,46 @@ var datax = new Array(0);
 datax.push(data);
 // A simple echo service.
 var existingFileNames = [];
+var filesSorted = [];
+var dirsSorted = [];
+
+
+
 app.ws('/', (ws) => {
-  console.log('hi');
+  //initial filenames send
+  fs.readdir('public/data/', (err, files) => {
+    if(err){
+      console.log("error in fs.readdir");
+    }
+    else{
+      files.forEach(file => {
+        if(file!='.DS_Store'){
+          var fileObj = 'public/data/' + file;
+          var stats = fs.statSync(fileObj);
+          
+          filesSorted.push({
+              "filename" : file,
+              "creation" : stats['birthtime']
+          });
+          
+          existingFileNames.push(file);
+        }
+      });
+    }
+  });
+
+  for(var i = 0; i < filesSorted.length; i++){
+    var dat = filesSorted[i];
+    console.log('time: '+ (dat["creation"]));
+  }
+
+  var initialFilenamesMessage = {
+    type: "initialFilenames",
+    msg: existingFileNames.length+" files",
+    existingFileNames: existingFileNames
+  };
+  ws.send(JSON.stringify(initialFilenamesMessage));
+
   ws.on('message', (msg) =>{  
     console.log('new message');
     var new_msg = JSON.parse(msg);
@@ -64,7 +104,7 @@ app.ws('/', (ws) => {
         }
       });
 
-    if (new_msg.msgType == "download"){
+    if (new_msg.msgType == "save"){
       var new_data = dataToString(datax);
       var filename = new_msg.filename.toString();
 
@@ -85,6 +125,7 @@ app.ws('/', (ws) => {
         var successMessage = {
           type: "fileWritten",
           msg: filename + ".csv written",
+          newFilename: filename+'.csv',
           existingFileNames: existingFileNames
         };
         ws.send(JSON.stringify(successMessage));
@@ -93,6 +134,15 @@ app.ws('/', (ws) => {
     else if (new_msg.msgType == 'reset'){
       console.log('reseting data')
       data = new Array(6);
+    }
+    else if (new_msg.msgType == 'download'){
+      var fileAddr = 'public/data/'+ new_msg.filename;
+      console.log('download: '+fileAddr);
+      var filename = new_msg.filename;
+
+      app.get('/download'+filename, function(req,res){
+       res.download(__dirname + '/public/data/'+ filename, filename);
+      })
     }
   });
 });
