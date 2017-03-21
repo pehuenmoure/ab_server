@@ -40,13 +40,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use express-ws to enable web sockets.
 require('express-ws')(app);
 
-var data = [1,2,35,43,4,1];
-var datax = new Array(0);
-datax.push(data);
+var data = new Array(1);
+data[0] = ["Lean Angle","Lean Rate","Front Motor Angle","Rear Motor Speed","Micros","Potato"];
 // A simple echo service.
 var existingFileNames = [];
 var filesSorted = [];
 var dirsSorted = [];
+
+//getting data stuff working through 
+var waypoints
 
 
 
@@ -105,7 +107,7 @@ app.ws('/', (ws) => {
       });
 
     if (new_msg.msgType == "save"){
-      var new_data = dataToString(datax);
+      var new_data = dataToString(data);
       var filename = new_msg.filename.toString();
 
       if(existingFileNames.includes(filename+'.csv') || filename.length < 5 || existingFileNames.includes(filename)){
@@ -133,7 +135,8 @@ app.ws('/', (ws) => {
     }
     else if (new_msg.msgType == 'reset'){
       console.log('reseting data')
-      data = new Array(6);
+      data = new Array(1);
+	  data[0] = ["Lean Angle","Lean Rate","Front Motor Angle","Rear Motor Speed","Micros","Potato"];
     }
     else if (new_msg.msgType == 'download'){
       var fileAddr = 'public/data/'+ new_msg.filename;
@@ -158,6 +161,26 @@ const wsServer = app.listen('65080', () => {
 // Additionally listen for non-websocket connections on the default App Engine
 // port 8080. Using http.createServer will skip express-ws's logic to upgrade
 // websocket connections.
+
+
+	app.route('/getwaypoints')
+		.get(function (req, res) { //Handles sending data
+			res.send(JSON.stringify(waypoints));
+		})
+		.post(function (req, res) { //Handles recieving data
+	  		console.log(req.body);
+	  		waypoints = req.body;
+		});
+
+	app.route('/datastream')
+		.get(function (req, res) { //Handles sending data
+			res.send(data);
+		})
+		.post(function (req, res) { //Handles recieving data
+	  		console.log(req.body);
+	  		console.log(req.body.length);
+	  		data.push(req.body);
+		});
 
 //=======================FOR WRITING TO FILE======================
 /*
