@@ -48,6 +48,7 @@ module.exports = function(app, data){
 	  getExternalIp((externalIp) => {
 	    res.render('index.ejs', {externalIp: externalIp});
 	  });
+	  
 	});
 
 	app.get('/graph', (req, res) => {

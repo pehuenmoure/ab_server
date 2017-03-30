@@ -4,26 +4,15 @@
   <!--<script src="/socket.io/socket.io.js"></script>-->
   <title>Graph</title>
 
-
-
-<style>
-    hr{
-      /* https://css-tricks.com/examples/hrs/ */
-      border: 0;
-      height: 1px;
-      background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-    }
+  <style>
     .btn-container-right {
-  direction: rtl;
+      direction: rtl;
+    }
+  </style>
 
-
-}
-    </style>
   <script type="text/javascript">
 
-
-
-  var webSocketHost = location.protocol === 'https:' ? 'wss://' : 'ws://';
+    var webSocketHost = location.protocol === 'https:' ? 'wss://' : 'ws://';
     var externalIp = '<%= externalIp %>';
     var webSocketUri =  webSocketHost + externalIp + ':65080';
 

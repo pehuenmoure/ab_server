@@ -16,7 +16,6 @@
 // [START app]
 'use strict';
 
-
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
@@ -40,39 +39,94 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use express-ws to enable web sockets.
 require('express-ws')(app);
 
-var data = [1,2,35,43,4,1];
-var datax = new Array(0);
-datax.push(data);
+//postgres
+
+//usrename:password ... dbname
+var conString = "postgres://postgres:postgres@localhost/ab_data";
+
+var pg = require('pg');
+function query(query, fn){
+  //query is a SQL query string
+    pg.connect(conString, function(err, client, done){
+      if(err) {return console.error('pg error', err);}
+        client.query(query, function(err, result){
+          if(err) {return console.error('query error', err);}
+          fn(JSON.stringify(result.rows));
+    });
+  });
+}
+
+query('SELECT * FROM tests', function(result){
+  console.log("async: "+result);
+});
+
+//pg-promise version
+var pgp = require('pg-promise')();
+var db = pgp(conString);
+
+db.any("select * from tests", [true])
+    .then(data => {
+        console.log("data: "+JSON.stringify(data));
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+db.any("select * from data", [true])
+    .then(data => {
+        console.log("data: "+JSON.stringify(data));
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+
+/*
+router.post('/getTestsTable', (req, res, next) => {
+  const results = [];
+  // Grab data from http request
+  const data = {text: req.body.text, complete: false};
+  // Get a Postgres client from the connection pool
+  pg.connect(conString, (err, client, done) => {
+    // Handle connection errors
+    if(err) {
+      done();
+      console.log(err);
+      return res.status(500).json({success: false, data: err});
+    }
+    // SQL Query > Select Data
+    const query = client.query('SELECT * FROM tests');
+    // Stream results back one row at a time
+    query.on('row', (row) => {
+      results.push(row);
+    });
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+      done();
+      console.log(res.json(results));
+      return res.json(results);
+    });
+  });
+});
+*/
+
+function randomIntArray(rows, cols){
+  var arr = [];
+  for (var i = 0; i < rows; i++){
+    arr.push(randomIntRow(cols));
+  }
+  function randomIntRow(cols){
+    var row = [];
+    for (var i = 0; i < cols; i++){
+      // random int between 
+      row.push(Math.floor(Math.random() * 10) + 1  )
+    }
+    return row;
+  }
+  return arr
+}
+console.log(randomIntArray(10,6));
+
 // A simple echo service.
 var existingFileNames = [];
 var filesSorted = [];
 var dirsSorted = [];
 
-
-
 app.ws('/', (ws) => {
-  //initial filenames send
-  fs.readdir('public/data/', (err, files) => {
-    if(err){
-      console.log("error in fs.readdir");
-    }
-    else{
-      files.forEach(file => {
-        if(file!='.DS_Store'){
-          var fileObj = 'public/data/' + file;
-          var stats = fs.statSync(fileObj);
-          
-          filesSorted.push({
-              "filename" : file,
-              "creation" : stats['birthtime']
-          });
-          
-          existingFileNames.push(file);
-        }
-      });
-    }
-  });
-
   for(var i = 0; i < filesSorted.length; i++){
     var dat = filesSorted[i];
     console.log('time: '+ (dat["creation"]));
@@ -85,67 +139,12 @@ app.ws('/', (ws) => {
   };
   ws.send(JSON.stringify(initialFilenamesMessage));
 
-  ws.on('message', (msg) =>{  
-    console.log('new message');
-    var new_msg = JSON.parse(msg);
+  ws.on('message', (msg) =>{
     
-    //may be inefficient, because it's reading all the file names in the data folder everytime ws receives a message
-    //existing files array doesnt work the first time after the server is started
-    fs.readdir('public/data/', (err, files) => {
-        if(err){
-          console.log("error in fs.readdir");
-        }
-        else{
-          files.forEach(file => {
-            if(file!='.DS_Store'){
-              existingFileNames.push(file);
-            }
-          });
-        }
-      });
-
-    if (new_msg.msgType == "save"){
-      var new_data = dataToString(datax);
-      var filename = new_msg.filename.toString();
-
-      if(existingFileNames.includes(filename+'.csv') || filename.length < 5 || existingFileNames.includes(filename)){
-        console.log("invalid filename");
-        var message = (filename.length < 5) ? "filename must be over 5 characters" : "filename is taken";
-        // send error 
-        var errorMessage = {
-          type: "filenameError",
-          msg: message
-        };
-        ws.send(JSON.stringify(errorMessage));
-      }
-      else{
-        console.log('write file');
-        createCSVFile(new_data, filename);
-        
-        var successMessage = {
-          type: "fileWritten",
-          msg: filename + ".csv written",
-          newFilename: filename+'.csv',
-          existingFileNames: existingFileNames
-        };
-        ws.send(JSON.stringify(successMessage));
-      }
-    }
-    else if (new_msg.msgType == 'reset'){
-      console.log('reseting data')
-      data = new Array(6);
-    }
-    else if (new_msg.msgType == 'download'){
-      var fileAddr = 'public/data/'+ new_msg.filename;
-      console.log('download: '+fileAddr);
-      var filename = new_msg.filename;
-
-      app.get('/download'+filename, function(req,res){
-       res.download(__dirname + '/public/data/'+ filename, filename);
-      })
-    }
   });
-});
+  });
+
+  
 
 
 require('./routes/main')(app, data);
@@ -182,7 +181,7 @@ function dataToString(rawdata){
 */
 function createCSVFile(data, name){
   // flag wx causes this to fail when filename exists, prevents overwriting data
-  fs.writeFile('public/data/' + name + '.csv', data,{flag:'wx'}, function(err) {
+  fs.writeFile('public/data/' + name + '.csv', data, {flag:'wx'}, function(err) {
     if (err) {
       return console.error(err);
     }
