@@ -104,22 +104,23 @@ router.post('/getTestsTable', (req, res, next) => {
 });
 */
 
-function randomIntArray(rows, cols){
+function randomArray(rows, cols){
   var arr = [];
   for (var i = 0; i < rows; i++){
-    arr.push(randomIntRow(cols));
+    arr.push(randomRow(cols));
   }
-  function randomIntRow(cols){
+  function randomRow(cols){
     var row = [];
     for (var i = 0; i < cols; i++){
       // random int between 
-      row.push(Math.floor(Math.random() * 10) + 1  )
+      row.push((Math.random() * 10) + 1  )
     }
     return row;
   }
   return arr
 }
-console.log(randomIntArray(10,6));
+console.log(randomArray(4,3));
+
 
 // A simple echo service.
 var existingFileNames = [];
@@ -147,7 +148,7 @@ app.ws('/', (ws) => {
   
 
 
-require('./routes/main')(app, data);
+require('./routes/main')(app);
 
 // Start the websocket server
 const wsServer = app.listen('65080', () => {
