@@ -117,6 +117,7 @@ var teamEmails =
 
     if($.inArray(profile.getEmail(), teamEmails)!=-1){
       // hidden class used so these elements load hidden and don't wait for jquery
+      //remove hidden classes for first login, then show
       $("#graphi").removeClass('hidden');
       $("#navi").removeClass('hidden');
       $("#g-signout").removeClass('hidden');
@@ -146,11 +147,13 @@ var teamEmails =
     auth2.signOut().then(function () {
       console.log('User signed out.');
     });
+    
     $("#graphi").hide();
     $("#navi").hide();
     $("#g-signout").hide();
     $("#profile").hide();
     $("#account-details").hide();
+
     $("#signin-nav").text("Team Sign In");
   }
 

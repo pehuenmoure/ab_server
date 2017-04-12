@@ -17,7 +17,7 @@
 
 const request = require('request');
 
-module.exports = function(app, data){
+module.exports = function(app, waypoints, data){
 	// [START external_ip]
 	// In order to use websockets on App Engine, you need to connect directly to
 	// application instance using the instance's public external IP. This IP can
@@ -48,9 +48,7 @@ module.exports = function(app, data){
 	  getExternalIp((externalIp) => {
 	    res.render('index.ejs', {externalIp: externalIp});
 	  });
-	  
 	});
-
 	app.get('/graph', (req, res) => {
 		getExternalIp((externalIp) => {
 			res.render('graph.ejs', {externalIp: externalIp});
@@ -83,38 +81,8 @@ module.exports = function(app, data){
 			res.send(JSON.stringify(waypoints));
 		})
 		.post(function (req, res) { //Handles recieving data
-	  		console.log(req.body);
 	  		waypoints = req.body;
 		});
 
-	app.route('/datastream')
-		.get(function (req, res) { //Handles sending data
-			res.send(data);
-		})
-		.post(function (req, res) { //Handles recieving data
-	  		console.log(req.body);
-	  		data.push(req.body);
-			if(d>5000){
-				data[5] = d;
-				// sendToApp(JSON.stringify(data)); //Should I reinitialize the array?
-				// console.log(data);
-				app.ws.send('data-msg', data);
-			} else {
-				var col = Math.floor(Math.trunc(d)/1000);
-				if (col == 1){
-					data[col-1] = d-(col*1500.0);
-				}else if (col == 2){
-					data[col-1] = d-(2500.0);
-				}else if (col == 3){
-					data[col-1] = d-(3500.0);
-				}else if (col == 4){
-					data[col-1] = 0;//d-(4500.0);
-				}
-			}
-		});
 
-	app.route('/getdata')
-		.get(function(req, res){
-			res.send(data);
-		})
 }
