@@ -71,6 +71,12 @@ module.exports = function(app, data){
 	app.get('/home', (req, res) => {
 		res.render('home');
 	});
+	app.get('/recruitment', (req, res) => {
+		res.render('recruitment');
+	});
+	app.get('/recruitment', (req, res) => {
+		res.render('recruitment');
+	});
 
 	app.route('/getwaypoints')
 		.get(function (req, res) { //Handles sending data

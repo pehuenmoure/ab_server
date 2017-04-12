@@ -5,11 +5,11 @@
     <!--Google Sign In-->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="133918830188-qdv3gp9c8bdp0849mg7ml9l4eu4efbm9.apps.googleusercontent.com">
-    <!--Client secret: zsyif6sGdREXAd111-l9gonh-->
-
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
 
 <style>
+
+
   #nav{
     background-color: black;
     font-family: Raleway;
@@ -18,6 +18,7 @@
   /*spacing below navbar*/
   #navpad { 
     padding-top: 85px; 
+    padding-bottom: 100px;
   }
   .navbar{
     min-height: 0px;
@@ -65,10 +66,26 @@
       box-shadow:         1px 1px 2px 3px #e6e6e6;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
     }
 
+    .hidden { display: none; }
+
+/*login dropdown  http://bootsnipp.com/snippets/402bK*/
+      .navbar-toggle{margin-top:20px !important;}
+      .dropdown-menu{background:#fff !important;}
+      .navbar-login{
+        width: 350px;
+        padding: 10px;
+        padding-bottom: 0px;
+      }
+
+.icon-size
+{
+    font-size: 87px;
+}
 </style>
 
 
 <script type="text/javascript">
+// add/subtract emails here to change permissions
 var teamEmails = 
     ['rb696@cornell.edu',
     'kaf222@cornell.edu',
@@ -89,20 +106,38 @@ var teamEmails =
     'ad765@cornell.edu'];
 
   $("#graphi").hide();
-  $("#navigation").hide();
+  $("#navi").hide();
+  $("#g-signout").hide();
 
   function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
     console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-    
 
-    if($.inArray('specialword', teamEmails)){
+    if($.inArray(profile.getEmail(), teamEmails)!=-1){
+      // hidden class used so these elements load hidden and don't wait for jquery
+      $("#graphi").removeClass('hidden');
+      $("#navi").removeClass('hidden');
+      $("#g-signout").removeClass('hidden');
+      $("#account-details").removeClass('hidden');
       $("#graphi").show();
-      $("#navigation").show();
-      console.log("rohit2 signed in")
+      $("#navi").show();
+      $("#g-signout").show();
+      $("#account-details").show();
+      console.log(profile.getName()+" signed in")
+      // display name
+      $("#signin-nav").text(profile.getName());
+      
+      $("#d-name").text(profile.getName());
+      $("#d-email").text(profile.getEmail());
+      $('#d-name').prepend('<img id="profile" src="'+profile.getImageUrl()+'" />')
+    }
+    else{
+      //alert unauthorized user
+      console.log("unauthorized user!");
+      alert('who are you!');
+      signOut();
     }
   }
 
@@ -112,9 +147,22 @@ var teamEmails =
       console.log('User signed out.');
     });
     $("#graphi").hide();
-    $("#navigation").hide();
+    $("#navi").hide();
+    $("#g-signout").hide();
+    $("#profile").hide();
+    $("#account-details").hide();
+    $("#signin-nav").text("Team Sign In");
   }
 
+   function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 200,
+        'height': 30,
+        'longtitle': true,
+        'theme': 'dark'
+      });
+    }
 </script>
 
 </head>
@@ -138,15 +186,49 @@ var teamEmails =
 
     <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li id="graphi"><a href="#graph" id="graph" >Graph</a></li>
-        <li id="navi"><a href="#navigation" id="navigation">Navigation</a></li>
+        <li id="graphi" class="hidden"><a href="#graph" id="graph" >Graph</a></li>
+        <li id="navi" class="hidden"><a href="#navigation" id="navigation">Navigation</a></li>
         <li id="abouti"><a href="#about" id="about">About</a></li>
         <li id="teami"><a href="#team" id="team">Team</a></li>
         <li id="subteami"><a href="#subteams" id="subteams">Subteams</a></li>
-        <li id="g-signin"><div class="g-signin2" data-onsuccess="onSignIn"></li>
-        <li id="g-signout"> <a href="#" onclick="signOut();">Sign out</a></div></li>
+        <li id="recruitmenti"><a href="#recruitment" id="recruitment">Recruitment</a></li>
       </ul>
-    </div>
+</div>
+      <div class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-user hidden"></span> 
+            <strong id="signin-nav">Team Sign In</strong>
+            <span class="glyphicon glyphicon-chevron-down"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <div class="navbar-login">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <p class="text-center">
+                        <span class="glyphicon glyphicon-user icon-size"></span>
+                        <div id="g-signin"><div class="g-signin2" data-onsuccess="onSignIn"></div>
+                        <div id="g-signout" class="btn hidden"> <a href="#" onclick="signOut();">Sign out</a></div>
+                    </p>
+                  </div>
+
+                  <div class="col-lg-8 hidden" id="account-details">
+                    <p class="text-left" id="d-name"><strong>Mahesh</strong></p>
+                    <p class="text-left small" id="d-email">justdemo@gmail.com</p>
+
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+       </li>
+      </div>
+
+
+
+
+    
   </div>
 </nav>
 
