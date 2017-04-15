@@ -39,12 +39,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 require('express-ws')(app);
 
 var waypoints = {
- "title" : "test title",
- "singer" : "some singer"
+ "waypoints": "none"
 };
 var data;
 
 require('./routes/main')(app, waypoints, data);
+require('./routes/db')(app, waypoints, data);
 
 // Start the websocket server
 const wsServer = app.listen('65080', () => {

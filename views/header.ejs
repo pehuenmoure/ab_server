@@ -108,13 +108,12 @@ var teamEmails =
   $("#graphi").hide();
   $("#navi").hide();
   $("#g-signout").hide();
-
+  
   function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
     console.log('Name: ' + profile.getName());
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
     if($.inArray(profile.getEmail(), teamEmails)!=-1){
       // hidden class used so these elements load hidden and don't wait for jquery
       //remove hidden classes for first login, then show
@@ -147,7 +146,7 @@ var teamEmails =
     auth2.signOut().then(function () {
       console.log('User signed out.');
     });
-    
+
     $("#graphi").hide();
     $("#navi").hide();
     $("#g-signout").hide();

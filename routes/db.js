@@ -1,10 +1,32 @@
 //postgres
 
+
+'use strict';
+
+const request = require('request');
+
+module.exports = function(app, waypoints, data){
+
 //usrename:password ... dbname
 var conString = "postgres://postgres:postgres@localhost/ab_data";
 
 var pg = require('pg');
-function query(query, fn){
+//pg-promise version
+var pgp = require('pg-promise')();
+var db = pgp(conString);
+
+
+app.get('/testnames', (req, res) => {
+    db.any("select * from tests", [true])
+    .then(data => {
+        //console.log("data: "+JSON.stringify(data));
+        res.json(data);
+        //res.send("data: "+JSON.stringify(data));
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+  });
+
+/*function query(query, fn){
   //query is a SQL query string
     pg.connect(conString, function(err, client, done){
       if(err) {return console.error('pg error', err);}
@@ -16,25 +38,23 @@ function query(query, fn){
 }
 
 query('SELECT * FROM tests', function(result){
- // console.log("async: "+result);
+   console.log("async: "+result);
 });
+*/
 
-//pg-promise version
-var pgp = require('pg-promise')();
-var db = pgp(conString);
-
+/*
 db.any("select * from tests", [true])
     .then(data => {
-       // console.log("data: "+JSON.stringify(data));
+        console.log("data: "+JSON.stringify(data));
     })
     .catch(error => {console.log("ERROR:", error.message || error);});
 db.any("select * from data", [true])
     .then(data => {
-      //  console.log("data: "+JSON.stringify(data));
+        console.log("data: "+JSON.stringify(data));
     })
     .catch(error => {console.log("ERROR:", error.message || error);});
 
-/*
+
 router.post('/getTestsTable', (req, res, next) => {
   const results = [];
   // Grab data from http request
@@ -79,25 +99,7 @@ function randomArray(rows, cols){
   return arr
 }
 
-// A simple echo service.
-var existingFileNames = [];
-var filesSorted = [];
-var dirsSorted = [];
 
-app.ws('/', (ws) => {
-  for(var i = 0; i < filesSorted.length; i++){
-    var dat = filesSorted[i];
-    console.log('time: '+ (dat["creation"]));
-  }
 
-  var initialFilenamesMessage = {
-    type: "initialFilenames",
-    msg: existingFileNames.length+" files",
-    existingFileNames: existingFileNames
-  };
-  ws.send(JSON.stringify(initialFilenamesMessage));
 
-  ws.on('message', (msg) =>{
-    
-  });
-  });
+}

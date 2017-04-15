@@ -5,7 +5,7 @@
  var directionsService;
  var map;
 
- function initMap() {
+ function initMap() {  
         //directions views
         directionsDisplay = new google.maps.DirectionsRenderer;
         directionsService = new google.maps.DirectionsService;
@@ -218,12 +218,14 @@ function sendToApp(postData){
   $.ajax({
     type: 'POST',
     data: postData,
-      contentType: 'application/json',
-      url: window.location.origin+'/getwaypoints',            
-      success: function(data) {
-          console.log('success');
-          console.log(JSON.stringify(data));
-      }
+    contentType: 'application/json',
+    url: window.location.origin+'/getwaypoints',            
+    success: function(data) {
+      console.log('success');
+      console.log(JSON.stringify(data));
+    }
   });
+
+
 }
 
