@@ -11,6 +11,7 @@
   </style>
 
   <script type="text/javascript">
+  // 
   $.ajax({
     url: window.location.origin+'/testnames',
     type: 'GET',
@@ -18,47 +19,61 @@
     success: function(res) {
         for(var i = 0; i < res.length; i++){
           var test = res[i];
-          addFileHTML(test["title"], test["tid"]);
-          document.getElementById(toString(test["tid"])).addEventListener("click", function() {
-              downloadFile(test["title"]);
-          }, false);
+
+          addFileHTML(test["title"], test["tid"].toString());
         }
     }
   });
 
+
 function addFileHTML(filename, id){
+console.log("filename: " + typeof filename + filename)
+console.log("id: " + typeof id + id)
     var form ='<div class="row">\
         <div class="col-lg-6">\
           <div class="input-group">\
             <span class="input-group-btn">\
-              <button class="btn btn-secondary" type="button" onclick="sendNote(\'heelo.csv\',$(\''+id+'\').val())">Add note</button>\
+              <button class="btn btn-secondary" type="button">Add note</button>\
             </span>\
             <input type="text" class="form-control" placeholder="Note..." >\
           </div>\
         </div>\
-      </div>'
-      var button = "<h1>"+filename +"</h1>"+form+"\n" +"<div class=\'btn-container-right\'>" +"<button type=\"button\" class=\"btn btn-info\" id=\""+id+"\">Download</button>" + "</div>"+ "<hr/>";
+      </div>';
+
+    var button = "<h1>"+filename +"</h1>"+form+"\n" +"<div class=\'btn-container-right\'>" +"<button type=\"button\" class=\"btn btn-info\" id=\""+id+"\">Download</button>" + "</div>"+ "<hr/>";
 
     $('#files').after(
         button
       );
-    console.log(form + button);
+
+
+    var button = document.getElementById(id);
+         
+    button.addEventListener("click", function() {
+        downloadFile(filename, id)
+    }, false);
   }
 
-function downloadFile(filename){
-  console.log(filename);
+function downloadFile(filename, tid){
+  console.log(tid+ filename+" downloading");
+
+  $.ajax({
+    url: window.location.origin+'/download',
+    type: 'GET',
+    headers: {"id":tid},
+    dataType: 'json', // added data type
+    success: function(res) {
+      //console.log(JSON.stringify(res));
+    }
+  });
+
 }
-
-
   </script>
 
 </head>
 
 <body>
-
   <p id="files"></p>
-  
-  
 </body>
 
 </html>

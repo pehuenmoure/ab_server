@@ -8,7 +8,43 @@
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
 
 <style>
-
+/*fixes issue with navbar collapsing to two rows: http://stackoverflow.com/questions/20012665/disable-bootstrap-3-navbar-going-2-rows-in-medium-viewport-size*/
+    @media (max-width: 890px) {
+        .navbar-header {
+            float: none;
+        }
+        .navbar-toggle {
+            display: block;
+        }
+        .navbar-collapse {
+            border-top: 1px solid transparent;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .navbar-collapse.collapse {
+            display: none!important;
+        }
+        .navbar-nav {
+            float: none!important;
+            margin: 7.5px -15px;
+        }
+        .navbar-nav>li {
+            float: none;
+        }
+        .navbar-nav>li>a {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .navbar-text {
+            float: none;
+            margin: 15px 0;
+        }
+        .navbar-collapse.collapse.in { 
+            display: block!important;
+        }
+        .collapsing {
+            overflow: hidden!important;
+        }
+    }
 
   #nav{
     background-color: black;
@@ -81,6 +117,13 @@
 {
     font-size: 87px;
 }
+
+@media(max-width:992px){
+.nav>li>a {
+padding-left: 10px;
+padding-right:10px
+    }
+}
 </style>
 
 
@@ -108,7 +151,7 @@ var teamEmails =
   $("#graphi").hide();
   $("#navi").hide();
   $("#g-signout").hide();
-  
+
   function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
@@ -170,6 +213,7 @@ var teamEmails =
 </head>
 <nav class="navbar navbar-inverse navbar-fixed-top" id="nav">
   <div class="container-fluid">
+
     <div class="navbar-header">
        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="icon-bar"></span>
@@ -186,23 +230,25 @@ var teamEmails =
       </ul>
     </div>
 
-    <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li id="graphi" class="hidden"><a href="#graph" id="graph" >Graph</a></li>
+        <li id="graphi" class="hidden"><a href="#graph" id="graph" >Data</a></li>
         <li id="navi" class="hidden"><a href="#navigation" id="navigation">Navigation</a></li>
         <li id="abouti"><a href="#about" id="about">About</a></li>
         <li id="teami"><a href="#team" id="team">Team</a></li>
         <li id="subteami"><a href="#subteams" id="subteams">Subteams</a></li>
-        <li id="recruitmenti"><a href="#recruitment" id="recruitment">Recruitment</a></li>
+        <!-- recruitment linked on homepage <li id="recruitmenti"><a href="#recruitment" id="recruitment">Recruitment</a></li>-->
       </ul>
-</div>
-      <div class="nav navbar-nav navbar-right">
+
+      <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
+
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <span class="glyphicon glyphicon-user hidden"></span> 
             <strong id="signin-nav">Team Sign In</strong>
             <span class="glyphicon glyphicon-chevron-down"></span>
           </a>
+
           <ul class="dropdown-menu">
             <li>
               <div class="navbar-login">
@@ -214,23 +260,22 @@ var teamEmails =
                         <div id="g-signout" class="btn hidden"> <a href="#" onclick="signOut();">Sign out</a></div>
                     </p>
                   </div>
-
+            </li>
+            <li>
                   <div class="col-lg-8 hidden" id="account-details">
                     <p class="text-left" id="d-name"><strong>Mahesh</strong></p>
                     <p class="text-left small" id="d-email">justdemo@gmail.com</p>
 
                   </div>
-                </div>
+                </ul>
               </div>
             </li>
           </ul>
-       </li>
+
+        </li>
       </div>
+      </div>    
 
-
-
-
-    
   </div>
 </nav>
 

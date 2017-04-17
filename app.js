@@ -43,8 +43,9 @@ var waypoints = {
 };
 var data;
 
-require('./routes/main')(app, waypoints, data);
-require('./routes/db')(app, waypoints, data);
+require('./routes/main')(app);
+require('./routes/db')(app, data);
+require('./routes/navroute')(app, waypoints);
 
 // Start the websocket server
 const wsServer = app.listen('65080', () => {

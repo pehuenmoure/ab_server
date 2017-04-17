@@ -5,7 +5,7 @@
 
 const request = require('request');
 
-module.exports = function(app, waypoints, data){
+module.exports = function(app, data){
 
 //usrename:password ... dbname
 var conString = "postgres://postgres:postgres@localhost/ab_data";
@@ -18,6 +18,21 @@ var db = pgp(conString);
 
 app.get('/testnames', (req, res) => {
     db.any("select * from tests", [true])
+    .then(data => {
+        //console.log("data: "+JSON.stringify(data));
+        res.json(data);
+        //res.send("data: "+JSON.stringify(data));
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+  });
+
+app.get('/download', (req, res) => {
+  var query = "select D.lean_angle, D.lean_angular_rate, D.steer_angle, D.measured_steer_rate,\
+  D.desired_steer_rate, D.measured_steer_angle, D.desired_steer_angle, D.measured_velocity, \
+  D.desired_velocity, D.battery_voltage, D.time from tests T JOIN data D on T.tid = D.tid\
+   where T.tid = "+req.headers["id"].toString();
+   console.log(query)
+   db.any(query, [true])
     .then(data => {
         //console.log("data: "+JSON.stringify(data));
         res.json(data);
