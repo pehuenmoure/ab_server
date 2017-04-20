@@ -52,39 +52,6 @@ const wsServer = app.listen('65080', () => {
   console.log('Websocket server listening on port %s', wsServer.address().port);
 });
 
-// Additionally listen for non-websocket connections on the default App Engine
-// port 8080. Using http.createServer will skip express-ws's logic to upgrade
-// websocket connections.
-
-//=======================FOR WRITING TO FILE======================
-/*
-*Converts the 2d array into a csv String
-*/
-function dataToString(rawdata){
-  var str = "";
-  //Converting data to string
-  for(var i = 0; i < rawdata.length; i++){
-    for(var j = 0; j < rawdata[i].length; j++){
-      str += rawdata[i][j];
-      if(j < rawdata[i].length-1)
-        str+=',';
-    }
-    str+='\n';
-  }
-  return str;
-}
-
-/*
-*Writes data to a .csv file
-*/
-function createCSVFile(data, name){
-  // flag wx causes this to fail when filename exists, prevents overwriting data
-  fs.writeFile('public/data/' + name + '.csv', data, {flag:'wx'}, function(err) {
-    if (err) {
-      return console.error(err);
-    }
-  });
-}
 
 module.exports = app;
 // [END app]

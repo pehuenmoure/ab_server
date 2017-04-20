@@ -14,32 +14,98 @@ var pg = require('pg');
 //pg-promise version
 var pgp = require('pg-promise')();
 var db = pgp(conString);
-
+var csv = require('csv');
+var copyTo = require('pg-copy-streams').to;
+var json2csv = require('json2csv');
 
 app.get('/testnames', (req, res) => {
     db.any("select * from tests", [true])
     .then(data => {
-        //console.log("data: "+JSON.stringify(data));
         res.json(data);
-        //res.send("data: "+JSON.stringify(data));
     })
     .catch(error => {console.log("ERROR:", error.message || error);});
   });
 
 app.get('/download', (req, res) => {
+  /*
+TO STDOUT WITH CSV
+  */
+  //var id = req.headers["id"].toString();
   var query = "select D.lean_angle, D.lean_angular_rate, D.steer_angle, D.measured_steer_rate,\
   D.desired_steer_rate, D.measured_steer_angle, D.desired_steer_angle, D.measured_velocity, \
   D.desired_velocity, D.battery_voltage, D.time from tests T JOIN data D on T.tid = D.tid\
-   where T.tid = "+req.headers["id"].toString();
-   console.log(query)
-   db.any(query, [true])
+   where T.tid = "+id;
+   var csvquery = "copy ("+query+") TO STDOUT WITH (FORMAT CSV, HEADER)";
+   /*var testQuery ="select * from tests";
+   console.log(csvquery)
+   db.any(csvquery, [true])
     .then(data => {
-        //console.log("data: "+JSON.stringify(data));
+        console.log(data);
         res.json(data);
-        //res.send("data: "+JSON.stringify(data));
     })
     .catch(error => {console.log("ERROR:", error.message || error);});
-  });
+
+    pg.connect(function(err, client, done) {
+  var stream = client.query(copyTo(csvquery));
+  stream.pipe(process.stdout);
+  stream.on('end', done);
+  stream.on('error', done);
+});*/
+  db.any(query, [true])
+    .then(data => {
+        //res.json(data);
+        try {
+          var result = json2csv({ data: data});
+          res.send(result)
+          
+        } catch (err) {
+          // Errors are thrown for bad options, or if the data is empty and no fields are provided. 
+          // Be sure to provide fields if it is possible that your data array will be empty. 
+          console.error(err);
+        }
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+
+
+});
+function randomArray(rows, cols){
+  var arr = [];
+  for (var i = 0; i < rows; i++){
+    arr.push(randomRow(cols));
+  }
+  function randomRow(cols){
+    var row = [];
+    for (var i = 0; i < cols; i++){
+      // random int between 
+      row.push((Math.random() * 10) + 1  )
+    }
+    return row;
+  }
+  return arr
+}
+
+/* 
+  Converts the 2d array into a csv String
+*/
+function dataToString(rawdata){
+  var str = "";
+  //Converting data to string
+  for(var i = 0; i < rawdata.length; i++){
+    for(var j = 0; j < rawdata[i].length; j++){
+      str += rawdata[i][j];
+      if(j < rawdata[i].length-1)
+        str+=',';
+    }
+    str+='\n';
+  }
+  return str;
+}
+
+function randomCSV(){
+  return dataToString(randomArray(11,11));
+}
+
+}
 
 /*function query(query, fn){
   //query is a SQL query string
@@ -97,24 +163,3 @@ router.post('/getTestsTable', (req, res, next) => {
   });
 });
 */
-
-function randomArray(rows, cols){
-  var arr = [];
-  for (var i = 0; i < rows; i++){
-    arr.push(randomRow(cols));
-  }
-  function randomRow(cols){
-    var row = [];
-    for (var i = 0; i < cols; i++){
-      // random int between 
-      row.push((Math.random() * 10) + 1  )
-    }
-    return row;
-  }
-  return arr
-}
-
-
-
-
-}
