@@ -6,14 +6,32 @@
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
 <style>
 
+.circular--landscape {
+  display: inline-block;
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.circular--landscape img {
+  width: 172px;
+  height: 172px;
+
+  border-radius: 50%;
+}
+
 .avatar{
   object-fit: cover;
   width: 200px;
   height:200px;
   z-index:0;
   display: block;
+  border-radius: 50%;
 }
 .wheel{
+
   z-index:1;
   top:0;
   left: 10;
@@ -35,6 +53,7 @@ b {
 h2 {
     margin-top: 0;
 }
+
 </style>
 
 <script>
@@ -57,10 +76,24 @@ h2 {
   </head>
   <body>
 
+      <div class="member row shadow" id="wsm64">
+      <div class="col-sm-5">
+        <div class='circular--landscape'><img src="/images/IMG_0094.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
+      </div>
+      <div class="col-sm-7">
+        <h2>Will Murphy <br><b>Team Lead</b></h2>
+        <p><b>Major: </b>Mechanical Engineering</p>
+        <p><b>Year: </b>Junior '18</p>
+        <p>I joined the team at the beginning of summer 2016 and worked on the front motor to help the bike balance. This past semester, I was the systems sub-team lead, during which I worked on gathering data from our various sensors and giving the balance controller the information it needs to balance. More generally I am a junior interested in robotics, mechatronics and controls. I also am in Sigma Pi fraternity on campus, and I rowed for a year for the Cornell lightweights. I enjoy playing various sports and being outside when I'm not working on the bike!</p>
+      </div>
+    </div>
+    
+
     <div class="member row shadow" id="kaf22">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0097.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>Kyle Fenske</h2>
@@ -72,8 +105,8 @@ h2 {
 
     <div class="member row shadow" id="rb696">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0062.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>Rohit Bandaru</h2>
@@ -86,10 +119,11 @@ h2 {
     <div id="dem292">
       Dylan Meehan
     </div>
+
     <div class="member row shadow" id="oai2">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0100.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>Olav Imsdahl</h2>
@@ -107,8 +141,8 @@ h2 {
 
     <div class="member row shadow" id="dm585">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0087.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>David Miron</h2>
@@ -120,8 +154,8 @@ h2 {
 
     <div class="member row shadow" id="kwf37">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0061.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>Kenneth Fang</h2>
@@ -130,22 +164,12 @@ h2 {
         <p>I am interested in robotics in general, as well as theatre design. I have been helping out with software. Aside from the team, I am also on Cornell's Wushu team and Lion Dance club. </p>
       </div>
     </div>
-    <div class="member row shadow" id="wsm64">
-      <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
-      </div>
-      <div class="col-sm-7">
-        <h2>Will Murphy <br><b>Team Lead</b></h2>
-        <p><b>Major: </b>Mechanical Engineering</p>
-        <p><b>Year: </b>Junior '18</p>
-        <p>I joined the team at the beginning of summer 2016 and worked on the front motor to help the bike balance. This past semester, I was the systems sub-team lead, during which I worked on gathering data from our various sensors and giving the balance controller the information it needs to balance. More generally I am a junior interested in robotics, mechatronics and controls. I also am in Sigma Pi fraternity on campus, and I rowed for a year for the Cornell lightweights. I enjoy playing various sports and being outside when I'm not working on the bike!</p>
-      </div>
-    </div>
+
+
     <div class="member row shadow" id="cdm223">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0111.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>Conrad McCarthy</h2>
@@ -165,8 +189,8 @@ h2 {
     </div>-->
     <div class="member row shadow" id="asm692">
       <div class="col-sm-5">
-        <img src="#" class="img-responsive img-circle avatar">
-        <img src="/images/bikewheel.png" class="img-responsive img-circle wheel">
+        <div class='circular--landscape'><img src="/images/IMG_0054.JPG" class="img-responsive avatar"></div>
+        <img src="/images/bikewheel.png" class="img-responsive wheel">
       </div>
       <div class="col-sm-7">
         <h2>Arundathi Sharma</h2>

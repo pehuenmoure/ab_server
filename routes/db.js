@@ -26,16 +26,52 @@ app.get('/testnames', (req, res) => {
     .catch(error => {console.log("ERROR:", error.message || error);});
   });
 
+app.get('/storedata', (req, res) => {
+    db.any("select * from tests", [true])
+    .then(data => {
+        res.json(data);
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+  });
+//'INSERT INTO tests(time, note, title) VALUES(current_timestamp, '', 'newtest')'
+
+
 app.get('/download', (req, res) => {
+  //insert test table
+  //SELECT CURRENT_TIMESTAMP;
+  var time = new Date().valueOf();
+  var title = 'title';
+  db.none('INSERT INTO tests(time, note, title) VALUES($1, $2, $3)', [time, '', title])
+    .then(data => {
+        
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+
+
   /*
 TO STDOUT WITH CSV
   */
-  //var id = req.headers["id"].toString();
+  var id = req.headers["id"].toString();
   var query = "select D.lean_angle, D.lean_angular_rate, D.steer_angle, D.measured_steer_rate,\
   D.desired_steer_rate, D.measured_steer_angle, D.desired_steer_angle, D.measured_velocity, \
   D.desired_velocity, D.battery_voltage, D.time from tests T JOIN data D on T.tid = D.tid\
    where T.tid = "+id;
    var csvquery = "copy ("+query+") TO STDOUT WITH (FORMAT CSV, HEADER)";
+
+  db.any(query, [true])
+    .then(data => {
+        try {
+          var result = json2csv({ data: data});
+          //res.send(result)
+          res.json(data)
+        } catch (err) {
+          // Errors are thrown for bad options, or if the data is empty and no fields are provided. 
+          // Be sure to provide fields if it is possible that your data array will be empty. 
+          console.error(err);
+        }
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});
+
    /*var testQuery ="select * from tests";
    console.log(csvquery)
    db.any(csvquery, [true])
@@ -46,28 +82,13 @@ TO STDOUT WITH CSV
     .catch(error => {console.log("ERROR:", error.message || error);});
 
     pg.connect(function(err, client, done) {
-  var stream = client.query(copyTo(csvquery));
-  stream.pipe(process.stdout);
-  stream.on('end', done);
-  stream.on('error', done);
-});*/
-  db.any(query, [true])
-    .then(data => {
-        //res.json(data);
-        try {
-          var result = json2csv({ data: data});
-          res.send(result)
-          
-        } catch (err) {
-          // Errors are thrown for bad options, or if the data is empty and no fields are provided. 
-          // Be sure to provide fields if it is possible that your data array will be empty. 
-          console.error(err);
-        }
-    })
-    .catch(error => {console.log("ERROR:", error.message || error);});
-
-
+    var stream = client.query(copyTo(csvquery));
+    stream.pipe(process.stdout);
+    stream.on('end', done);
+    stream.on('error', done);
+    });*/
 });
+
 function randomArray(rows, cols){
   var arr = [];
   for (var i = 0; i < rows; i++){
