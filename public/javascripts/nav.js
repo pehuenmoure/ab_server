@@ -1,6 +1,6 @@
  // google.maps.Marker array
  var waypoints = []
-
+var waypointData;
  var directionsDisplay;
  var directionsService;
  var map;
@@ -138,7 +138,7 @@
               var route = response.routes[0];
               var data = getRoutePoints(route);
               logRoute(route, data);
-              sendToApp(data);
+              waypointData = data;
             }
 
           } else {
@@ -213,13 +213,17 @@
       }
     }
 
+function sendData(){
+  sendToApp(waypointData);
+}
+
 function sendToApp(postData){
   //simple ajax post request
   $.ajax({
     type: 'POST',
     data: postData,
     contentType: 'application/json',
-    url: window.location.origin+'/getwaypoints',            
+    url: window.location.origin+'/postwaypoints',            
     success: function(data) {
       console.log('success');
       console.log(JSON.stringify(data));

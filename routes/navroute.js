@@ -2,14 +2,23 @@
 
 const request = require('request');
 
-module.exports = function(app, waypoints){
+module.exports = function(app){
 
-	app.route('/getwaypoints')
-		.get(function (req, res) { //Handles sending data
-			res.send(JSON.stringify(waypoints));
+	var jsonfile = require('jsonfile')
+
+	var file = 'public/data/nav.json'
+
+	app.get('/getwaypoints', function (req, res) { //Handles sending data
+			jsonfile.readFile(file, function(err, obj) {
+				console.log(JSON.stringify(obj))
+				res.send(JSON.stringify(obj));
+			});	
 		})
-		.post(function (req, res) { //Handles recieving data
-	  		waypoints = req.body;
+		
+	app.post('/postwaypoints', function (req, res) { //Handles recieving data
+	  		jsonfile.writeFile(file, req.body, function (err) {
+  				console.error(err)
+			})
 		});
 
 }

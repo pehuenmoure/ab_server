@@ -38,14 +38,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use express-ws to enable web sockets.
 require('express-ws')(app);
 
-var waypoints = {
+/*var waypoints = {
  "waypoints": "none"
-};
+};*/
 var data;
 
 require('./routes/main')(app);
 require('./routes/db')(app, data);
-require('./routes/navroute')(app, waypoints);
+require('./routes/navroute')(app);
 
 // Start the websocket server
 const wsServer = app.listen('65080', () => {
