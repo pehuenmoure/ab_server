@@ -26,28 +26,39 @@ app.get('/testnames', (req, res) => {
     .catch(error => {console.log("ERROR:", error.message || error);});
   });
 
-app.get('/storedata', (req, res) => {
-    db.any("select * from tests", [true])
+
+app.post('/newData', (req, res) => {
+  //insert test table
+  //SELECT CURRENT_TIMESTAMP;
+  var title = 'default title2';
+  db.none('INSERT INTO tests(tid, time, note, title) VALUES((SELECT MAX(tid)+1 from tests),CURRENT_TIMESTAMP, $1, $2);', ['', title])
     .then(data => {
-        res.json(data);
+        console.log(data)
     })
-    .catch(error => {console.log("ERROR:", error.message || error);});
-  });
-//'INSERT INTO tests(time, note, title) VALUES(current_timestamp, '', 'newtest')'
+    .catch(error => {console.log("test ERROR:", error.message || error);});
+
+    var dataArray = randomArray(11,11);
+    var dataCSV = randomCSV();
+
+    /*for (var i = 0; i < 11; i++){
+      db.none('INSERT INTO data(did, tid, lean_angle, lean_angular_rate, steer_angle, measured_steer_rate, desired_steer_rate, measured_steer_angle, desired_steer_angle, measured_velocity, desired_velocity, battery_voltage, time) VALUES((SELECT MAX(did)+1 from data), (SELECT MAX(tid) from tests), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);', dataArray[i])
+    .then(data => {
+        console.log(data)
+    })
+    .catch(error => {console.log("data"+i"ERROR:", error.message || error);});
+
+    }*/
+    
+/*
+    db.none()
+    .then(data => {
+        console.log(data)
+    })
+    .catch(error => {console.log("ERROR:", error.message || error);});*/
+})
 
 
 app.get('/download', (req, res) => {
-  //insert test table
-  //SELECT CURRENT_TIMESTAMP;
-  var time = new Date().valueOf();
-  var title = 'title';
-  db.none('INSERT INTO tests(time, note, title) VALUES($1, $2, $3)', [time, '', title])
-    .then(data => {
-        
-    })
-    .catch(error => {console.log("ERROR:", error.message || error);});
-
-
   /*
 TO STDOUT WITH CSV
   */
@@ -56,7 +67,7 @@ TO STDOUT WITH CSV
   D.desired_steer_rate, D.measured_steer_angle, D.desired_steer_angle, D.measured_velocity, \
   D.desired_velocity, D.battery_voltage, D.time from tests T JOIN data D on T.tid = D.tid\
    where T.tid = "+id;
-   var csvquery = "copy ("+query+") TO STDOUT WITH (FORMAT CSV, HEADER)";
+   //var csvquery = "copy ("+query+") TO STDOUT WITH (FORMAT CSV, HEADER)";
 
   db.any(query, [true])
     .then(data => {
