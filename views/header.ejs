@@ -4,223 +4,16 @@
     <meta charset="utf-8">
     <!--Google Sign In-->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta name="google-signin-client_id" content="945121885326-j7hpmh0dg4pel0b3tjjlv1oe43u4qcmr.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="945121885326-ral6qki4908gs7ke164uk7nsrtsoqppi.apps.googleusercontent.com">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
 
-<style>
-/*fixes issue with navbar collapsing to two rows: http://stackoverflow.com/questions/20012665/disable-bootstrap-3-navbar-going-2-rows-in-medium-viewport-size*/
-    @media (max-width: 890px) {
-        .navbar-header {
-            float: none;
-        }
-        .navbar-toggle {
-            display: block;
-        }
-        .navbar-collapse {
-            border-top: 1px solid transparent;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-        }
-        .navbar-collapse.collapse {
-            display: none!important;
-        }
-        .navbar-nav {
-            float: none!important;
-            margin: 7.5px -15px;
-        }
-        .navbar-nav>li {
-            float: none;
-        }
-        .navbar-nav>li>a {
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-        .navbar-text {
-            float: none;
-            margin: 15px 0;
-        }
-        .navbar-collapse.collapse.in { 
-            display: block!important;
-        }
-        .collapsing {
-            overflow: hidden!important;
-        }
-    }
+    <link rel="stylesheet" type="text/css" href="stylesheets/main.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/navbar.css" />
 
-  #nav{
-    background-color: black;
-    font-family: Raleway;
-    width: auto !important;
-  }
-  /*spacing below navbar*/
-  #navpad { 
-    padding-top: 85px; 
-    padding-bottom: 100px;
-  }
-  .navbar{
-    min-height: 0px;
-    font-size: 18px;
-  }
-  /*set text position in navbar*/
-  .navbar-nav li a {
-    line-height: 35px;
-  }
-  .navbar {
-    -webkit-box-shadow: 0 8px 6px -6px #999;
-    -moz-box-shadow: 0 8px 6px -6px #999;
-    box-shadow: 0 8px 6px -6px #999;
-  }
-
-  #logo {
-    width: 50px;
-    height: 50px; 
-  }
-
-  #homei {
-    margin-top: -5px;
-  }
-
-  hr{
-      /* https://css-tricks.com/examples/hrs/ */
-      border: 0;
-      height: 1px;
-      background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-    }
-
-    h1{
-      font-family: Raleway;
-      font-size: 32px;
-    }
-    p{
-      font-family: Open Sans;
-      font-size: 14px;
-    }
-
-    .shadow {
-      border-radius: 10px;
-      -webkit-box-shadow: 1px 1px 2px 3px #e6e6e6;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-      -moz-box-shadow:    1px 1px 2px 3px #e6e6e6;  /* Firefox 3.5 - 3.6 */
-      box-shadow:         1px 1px 2px 3px #e6e6e6;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
-    }
-
-    .hidden { display: none; }
-
-/*login dropdown  http://bootsnipp.com/snippets/402bK*/
-      .navbar-toggle{margin-top:20px !important;}
-      .dropdown-menu{background:#fff !important;}
-      .navbar-login{
-        width: 350px;
-        padding: 10px;
-        padding-bottom: 0px;
-      }
-
-.icon-size
-{
-    font-size: 87px;
-}
-
-@media(max-width:992px){
-.nav>li>a {
-padding-left: 10px;
-padding-right:10px
-    }
-}
-</style>
-
-
-<script type="text/javascript">
-// add/subtract emails here to change permissions
-var teamEmails = 
-    ['rb696@cornell.edu',
-    'kaf222@cornell.edu',
-    'dem292@cornell.edu', 
-    'kaf222@cornell.edu',
-    'dem292@cornell.edu',
-    'oai2@cornell.edu',
-    'ab873@cornell.edu',
-    'jsf239@cornell.edu',
-    'dm585@cornell.edu',
-    'kwf37@cornell.edu',
-    'wsm64@cornell.edu',
-    'cdm223@cornell.edu',
-    'ppm44@cornell.edu',
-    'fk233@cornell.edu',
-    'feb45@cornell.edu',
-    'mo345@cornell.edu',
-    'ad765@cornell.edu'];
-
-  //initialize page with private tabs hidden
-  $("#graphi").hide();
-  $("#navi").hide();
-  $("#g-signout").hide();
-
-  function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-    if($.inArray(profile.getEmail(), teamEmails)!=-1){
-      // hidden class used so these elements load hidden and don't wait for jquery
-      //remove hidden classes for first login, then show
-      $("#graphi").removeClass('hidden');
-      $("#navi").removeClass('hidden');
-      $("#g-signout").removeClass('hidden');
-      $("#account-details").removeClass('hidden');
-
-      $("#user-icon").hide();
-      //show private tabs
-      $("#graphi").show();
-      $("#navi").show();
-      $("#g-signout").show();
-      $("#account-details").show();
-      console.log(profile.getName()+" signed in")
-      // display name
-      $("#signin-nav").text(profile.getName());
-      
-      $("#d-name").text(profile.getName());
-      $("#d-email").text(profile.getEmail());
-      $('#propic').append('<img id="profile" src="'+profile.getImageUrl()+'" />')
-    }
-    else{
-      //alert unauthorized user
-      console.log("unauthorized user!");
-      alert('who are you!');
-      signOut();
-    }
-  }
-
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-    // hide private tabs
-    $("#graphi").hide();
-    $("#navi").hide();
-
-    //hide signout button, profile pic, and details
-    $("#g-signout").hide();
-    //delete propic so it doesnt show up for a different user
-    $('#profile').remove();
-    $("#account-details").hide();
-
-    //change navbar text
-    $("#signin-nav").text("Team Sign In");
-    $("#user-icon").show();
     
-  }
-
-   function renderButton() {
-      gapi.signin2.render('my-signin2', {
-        'scope': 'profile email',
-        'width': 200,
-        'height': 30,
-        'longtitle': true,
-        'theme': 'dark'
-      });
-    }
-</script>
 
 </head>
+<!--based off of Bootstrap template for navbar-->
 <nav class="navbar navbar-inverse navbar-fixed-top" id="nav">
   <div class="container-fluid">
 
@@ -280,10 +73,10 @@ var teamEmails =
                 <div id='inner-menu'>
                   
                   <div>
-                    <div id="propic" class="child image-pad"><span id="user-icon" class="glyphicon glyphicon-user icon-size child"></span></div>
+                    <div id="propic" class="child image-pad"><span id="user-icon" class="glyphicon glyphicon-user child"></span></div>
 
                     <div id="g-signin" class="child"><div class="g-signin2 child" data-onsuccess="onSignIn"></div></div>
-                    <div id="g-signout" class="btn hidden child" > <a href="#" class="child" onclick="signOut();">Sign out</a></div>
+                    <div id="g-signout" class="btn hidden child" > <a href="#" class="child" onclick="loginView.logout();">Sign out</a></div>
                     
                   </div>
 
@@ -304,7 +97,10 @@ var teamEmails =
   </div>
 </nav>
 
-  <body id="navpad">
-    
-  </body>
+<body id="navpad">
+  
+</body>
+<script src="javascripts/navbar.js"></script>
+
+
 </html> 

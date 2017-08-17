@@ -1,6 +1,6 @@
  // google.maps.Marker array
  var waypoints = []
-var waypointData;
+ var waypointData;
  var directionsDisplay;
  var directionsService;
  var map;
