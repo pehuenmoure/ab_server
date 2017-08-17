@@ -35,9 +35,9 @@ module.exports = function(app, waypoints, data){
 	    res.render('index.ejs', {externalIp: externalIp});
 	  });
 	});
-	app.get('/graph', (req, res) => {
+	app.get('/data', (req, res) => {
 		getExternalIp((externalIp) => {
-			res.render('graph.ejs', {externalIp: externalIp});
+			res.render('data.ejs', {externalIp: externalIp});
 		});
 	});
 	app.get('/navigation', (req, res) => {
