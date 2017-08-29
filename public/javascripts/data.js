@@ -1,3 +1,23 @@
+var model = {
+  init: function(){
+
+  }
+}
+
+var filesView = {
+  init: function(){
+
+  }
+}
+
+var controller = {
+  init: function(){
+
+  }
+}
+
+controller.init()
+
 $.ajax({
     url: window.location.origin+'/testnames',
     type: 'GET',

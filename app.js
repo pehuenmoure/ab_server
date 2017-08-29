@@ -21,6 +21,7 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const favicon = require('favicon');
 var router = express.Router();
 
 const app = express();
@@ -38,9 +39,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use express-ws to enable web sockets.
 require('express-ws')(app);
 
-/*var waypoints = {
- "waypoints": "none"
-};*/
+//app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
+
 var data;
 
 require('./routes/main')(app);

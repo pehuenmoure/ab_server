@@ -3,7 +3,7 @@
   "description": "Autonomous bicycle website.",
   "version": "0.0.1",
   "private": true,
-  "author": "Pehuen Moure",
+  "author": "Rohit Bandaru",
   "engines": {
     "node": ">=4.3.2"
   },
@@ -19,6 +19,7 @@
     "ejs": "~2.5.5",
     "express": "4.14.1",
     "express-ws": "^3.0.0",
+    "favicon": "0.0.2",
     "fs": "0.0.1-security",
     "google-auth-library": "^0.10.0",
     "google-maps": "^3.2.1",
