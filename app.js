@@ -39,8 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use express-ws to enable web sockets.
 require('express-ws')(app);
 
-//app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
-
 var data;
 
 require('./routes/main')(app);

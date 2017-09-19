@@ -14,4 +14,12 @@
 # [START app_yaml]
 runtime: nodejs
 env: flex
+manual_scaling:
+  instances: 1
 # [END app_yaml]
+# Error creating Deployment Manager deployment, status: 1, error: Memory GB (0.58) per VCPUs must be between 0.90 and 6.50.
+
+resources:
+  cpu: .5
+  memory_gb: 0.9
+  disk_size_gb: 10

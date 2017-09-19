@@ -74,7 +74,10 @@ var loginView = {
     console.log(profile.getName()+" signed in")
     // display name
     $("#signin-nav").text(profile.getName());
-    
+    //hide sign in button
+    $("#g-signin").hide();
+    $("#g-signout").show();
+
     $("#d-name").text(profile.getName());
     $("#d-email").text(profile.getEmail());
     $('#propic').append('<img id="profile" src="'+profile.getImageUrl()+'" />')
